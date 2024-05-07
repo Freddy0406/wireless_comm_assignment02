@@ -42,8 +42,12 @@ for n = 1:length(d)
 end
 
 %% Channel equalizer filter w(n) RLS LMS
-[mse] = RLS(u,d,1,250,N);
-semilogy(mse)
+[mse_rls] = RLS(u,d,1,250,N);
+[mse_lms] = LMS(u,d,0.075,N);
+semilogy(mse_rls)
+hold on
+semilogy(mse_lms)
+legend('RLS','LMS')
 xlim([0 500])
 
 %Output
