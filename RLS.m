@@ -10,10 +10,11 @@ function[mse] = RLS(u,d,lambda,delta,N)
 
     k_arr = zeros(M,1,N);
     alpha = zeros(N,1);
+
     
     for n = 1:N
         for j = 0:10
-            if(n+j<N)
+            if(n+j<=N)
                 u_temp(j+1) = u(n+j);
             else
                 u_temp(j+1) = 0;

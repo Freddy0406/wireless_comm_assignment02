@@ -8,7 +8,7 @@ function[mse] = LMS(u,d,miu,N)
 
     for n = 1:N
         for j = 0:10
-            if(n+j<N)
+            if(n+j<=N)
                 u_temp(j+1) = u(n+j);
             else
                 u_temp(j+1) = 0;
@@ -24,5 +24,4 @@ function[mse] = LMS(u,d,miu,N)
     end
 
     mse = alpha.^2;
-
 end

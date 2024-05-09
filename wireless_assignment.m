@@ -2,6 +2,8 @@ clc;
 clear;
 close all;
 
+
+rng(100);
 W = 3.1;
 time_step = 9998;
 channel_length = 3;
@@ -13,41 +15,35 @@ for i = 1:channel_length
 end
 
 %% Filter input signal (u,d)
-u = zeros(1,N);
-a = rand(1,time_step).*2-1;
-var_v = 0.001;
+a = rand(1,time_step).*2-1;     %Uniform[-1,1]
+var_v = 0.001;                  %Noise variance 
 
 %convolution (h * a)
-for n = 1:length(u)
-    noise = sqrt(var_v)*randn;
-    for k = 1:channel_length
-        if(n-k>0 && n-k<(time_step+1))
-            temp = h(k)*a(n-k); 
-        else
-            temp = 0;
-        end
-        u(n) = temp+u(n);
-    end
-    u(n) = u(n)+noise;    
-end
+
+u = conv(h,a);
+noise_v = sqrt(var_v)*randn(1,N);
+u = u+noise_v;
 
 d = zeros(1,N);
-
 for n = 1:length(d)
-    if(n-7>0 && n-7<length(a)+1)
-        d(n) = a(n-7);
+%     if(n-7>0 && n-7<length(a)+1)
+%         d(n) = a(n-7);
+%     else
+%         d(n) = 0;
+%     end
+    if(n<=time_step)
+        d(n) = a(n);
     else
         d(n) = 0;
     end
 end
-
 %% Channel equalizer filter w(n) RLS LMS
 [mse_rls] = RLS(u,d,1,250,N);
 [mse_lms] = LMS(u,d,0.075,N);
 semilogy(mse_rls)
 hold on
 semilogy(mse_lms)
-legend('RLS','LMS')
-xlim([0 500])
+legend('RLS','LMS',"Location","Best")
+xlim([0 250])
 
 %Output
